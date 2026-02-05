@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CloudSend</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="screen_setup__title">Please enter connection data for your server</string>
+    <string name="screen_setup__label_base_url">Server base url</string>
+    <string name="screen_setup__label_login">Login</string>
+    <string name="screen_setup__label_password">Password</string>
+    <string name="screen_setup__label_device_name">Device name</string>
+    <string name="screen_setup__button_connect">Connect</string>
+    <string name="screen_setup__connect_error_general">Failed to login to server</string>
+</resources>
