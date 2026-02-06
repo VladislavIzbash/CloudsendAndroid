@@ -10,7 +10,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
     @Binds
-    abstract fun bindBaseUrlRepository(preferencesStorage: PreferencesStorage): BaseUrlRepository
+    abstract fun bindBaseUrlRepository(preferencesStorage: PreferencesStorage): ConnectionParamsRepository
 
     @Binds
     abstract fun bindTokenRepository(preferencesStorage: PreferencesStorage): TokenRepository
@@ -19,9 +19,9 @@ abstract class DataModule {
         @Provides
         fun provideCloudsendClient(
             cloudsendClientFactory: CloudsendClientFactory,
-            baseUrlRepository: BaseUrlRepository,
+            connectionParamsRepository: ConnectionParamsRepository,
         ): CloudsendClient {
-            return cloudsendClientFactory.create(baseUrlRepository.getBaseUrl())
+            return cloudsendClientFactory.create(connectionParamsRepository.get().baseUrl)
         }
     }
 }

@@ -1,10 +1,9 @@
 package ru.vizbash.cloudsend.domain
 
 import android.util.Log
-import dagger.Lazy
-import ru.vizbash.cloudsend.data.BaseUrlRepository
-import ru.vizbash.cloudsend.data.CloudsendClient
+import ru.vizbash.cloudsend.data.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.CloudsendClientFactory
+import ru.vizbash.cloudsend.data.ConnectionParams
 import ru.vizbash.cloudsend.data.TokenRepository
 import javax.inject.Inject
 import kotlin.uuid.ExperimentalUuidApi
@@ -14,7 +13,7 @@ private const val TAG = "LoginInteractor"
 
 @OptIn(ExperimentalUuidApi::class)
 class LoginInteractor @Inject constructor(
-    private val baseUrlRepository: BaseUrlRepository,
+    private val connectionParamsRepository: ConnectionParamsRepository,
     private val tokenRepository: TokenRepository,
     private val cloudsendClientFactory: CloudsendClientFactory,
 ) {
@@ -30,15 +29,15 @@ class LoginInteractor @Inject constructor(
             val tokens = client.login(login, password)
             Log.i(TAG, "Authenticated to $baseUrl")
 
+            tokenRepository.saveTokens(tokens.accessToken, tokens.refreshToken)
+
             val deviceUuid = Uuid.random()
             client.registerDevice(deviceUuid, deviceName)
             Log.i(TAG, "Registered self as $deviceName with uuid=$deviceUuid")
 
-            baseUrlRepository.saveBaseUrl(baseUrl)
-            tokenRepository.saveTokens(tokens.accessToken, tokens.refreshToken)
+            connectionParamsRepository.save(ConnectionParams(baseUrl, deviceUuid))
             true
         } catch (e: Exception) {
-            baseUrlRepository.saveBaseUrl("")
             Log.e(TAG, "Failed to login to server: ${e.message}")
             false
         }

@@ -8,4 +8,8 @@
     <string name="screen_setup__label_device_name">Device name</string>
     <string name="screen_setup__button_connect">Connect</string>
     <string name="screen_setup__connect_error_general">Failed to login to server</string>
+    <string name="screen_send__device_online">Online</string>
+    <string name="screen_send__device_offline">Offline</string>
+    <string name="screen_send__loading_error">Error loading device list</string>
+    <string name="screen_send__no_devices">No other devices registered yet</string>
 </resources>

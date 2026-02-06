@@ -1,5 +1,6 @@
 package ru.vizbash.cloudsend.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,8 +37,9 @@ private val passwordTransformation = PasswordVisualTransformation()
 
 @Composable
 fun SetupScreen(
+    viewModel: SetupViewModel,
+    navigateToMain: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SetupViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -45,7 +47,9 @@ fun SetupScreen(
         modifier = modifier,
         state = state,
         onFormDataChange = viewModel::onFormChange,
-        onConnectClick = viewModel::onLoginClick,
+        onConnectClick = {
+            viewModel.onLoginClick(navigateToMain)
+        }
     )
 }
 
@@ -72,6 +76,7 @@ private fun SetupScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .safeDrawingPadding()
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.TopStart,

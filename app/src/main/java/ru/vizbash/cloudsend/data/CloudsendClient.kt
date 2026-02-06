@@ -9,6 +9,7 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -17,6 +18,7 @@ import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.vizbash.cloudsend.data.dto.AuthorizeRequest
+import ru.vizbash.cloudsend.data.dto.DeviceResponse
 import ru.vizbash.cloudsend.data.dto.RefreshRequest
 import ru.vizbash.cloudsend.data.dto.RegisterRequest
 import ru.vizbash.cloudsend.data.dto.TokensResponse
@@ -60,6 +62,10 @@ class CloudsendClient(
         }
     }
 
+    suspend fun listDevices(): List<DeviceResponse> {
+        return httpClient.get("devices").body()
+    }
+
     companion object {
         fun configureHttpClient(
             config: HttpClientConfig<*>,
@@ -88,6 +94,7 @@ class CloudsendClient(
                 bearer {
                     loadTokens {
                         val (access, refresh) = tokenRepository.loadTokens()
+                        println("Access token: $access")
                         access?.let {
                             BearerTokens(access, refresh)
                         }
@@ -101,7 +108,7 @@ class CloudsendClient(
                     }
 
                     sendWithoutRequest { request ->
-                        NON_AUTH_URLS.any {
+                        NON_AUTH_URLS.none {
                             request.url.encodedPath.startsWith(it)
                         }
                     }
