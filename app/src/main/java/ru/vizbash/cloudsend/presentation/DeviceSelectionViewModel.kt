@@ -13,7 +13,7 @@ import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.domain.ListTargetDevicesInteractor
 
 @HiltViewModel
-class SendViewModel @Inject constructor(
+class DeviceSelectionViewModel @Inject constructor(
     private val listTargetDevicesInteractor: ListTargetDevicesInteractor,
 ) : ViewModel() {
     sealed class State {

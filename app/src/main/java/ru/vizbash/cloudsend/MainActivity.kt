@@ -4,17 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.Serializable
 import ru.vizbash.cloudsend.domain.CheckSetupDoneInteractor
 import ru.vizbash.cloudsend.ui.screen.MainScreen
 import ru.vizbash.cloudsend.ui.screen.SetupScreen
@@ -32,33 +26,21 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        val startDestination = if (checkSetupDoneInteractor()) MainDest else SetupDest
+        var showMainScreen by mutableStateOf(checkSetupDoneInteractor())
 
         setContent {
-            val navController = rememberNavController()
-
             CloudSendTheme {
-                NavHost(navController, startDestination) {
-                    composable<SetupDest> {
-                        SetupScreen(
-                            viewModel = hiltViewModel(),
-                            navigateToMain = {
-                                navController.navigate(MainDest)
-                            }
-                        )
-                    }
-
-                    composable<MainDest> {
-                        MainScreen()
-                    }
+                if (showMainScreen) {
+                    MainScreen()
+                } else {
+                    SetupScreen(
+                        viewModel = hiltViewModel(),
+                        navigateToMain = {
+                            showMainScreen = true
+                        }
+                    )
                 }
             }
         }
     }
 }
-
-@Serializable
-object SetupDest
-
-@Serializable
-object MainDest

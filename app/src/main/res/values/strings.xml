@@ -8,8 +8,16 @@
     <string name="screen_setup__label_device_name">Device name</string>
     <string name="screen_setup__button_connect">Connect</string>
     <string name="screen_setup__connect_error_general">Failed to login to server</string>
-    <string name="screen_send__device_online">Online</string>
-    <string name="screen_send__device_offline">Offline</string>
-    <string name="screen_send__loading_error">Error loading device list</string>
-    <string name="screen_send__no_devices">No other devices registered yet</string>
+    <string name="screen_device_list__device_online">Online</string>
+    <string name="screen_device_list__device_offline">Offline</string>
+    <string name="screen_device_list__loading_error">Error loading device list</string>
+    <string name="screen_device_list__no_devices">No other devices registered yet</string>
+    <string name="screen_transfer__initializing_title">Sending request to %s</string>
+    <string name="screen_transfer__error_title">Error sending %s to %s</string>
+    <string name="screen_transfer__error_text">Error description</string>
+    <string name="screen_transfer__error_retry_button">Retry</string>
+    <string name="screen_transfer__done_title">Successfully sent %s to %s</string>
+    <string name="screen_transfer__progress_title">Sending %s to %s</string>
+    <string name="screen_transfer__progress_cancel_button">Cancel</string>
+    <string name="screen_transfer__back_button">Go back</string>
 </resources>
