@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package ru.vizbash.cloudsend.data.dto
 
 import kotlinx.serialization.SerialName

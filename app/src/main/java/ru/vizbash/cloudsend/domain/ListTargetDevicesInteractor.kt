@@ -8,7 +8,6 @@ import kotlin.uuid.ExperimentalUuidApi
 
 private val TAG = "ListTargetDevicesInteractor"
 
-@OptIn(ExperimentalUuidApi::class)
 class ListTargetDevicesInteractor @Inject constructor(
     private val cloudsendClient: CloudsendClient,
     private val connectionParamsRepository: ConnectionParamsRepository,

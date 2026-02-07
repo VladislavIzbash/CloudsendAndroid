@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,31 +17,13 @@ import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
 
     @Inject
-    lateinit var checkSetupDoneInteractor: CheckSetupDoneInteractor
+    override lateinit var checkSetupDoneInteractor: CheckSetupDoneInteractor
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        var showMainScreen by mutableStateOf(checkSetupDoneInteractor())
-
-        setContent {
-            CloudSendTheme {
-                if (showMainScreen) {
-                    MainScreen()
-                } else {
-                    SetupScreen(
-                        viewModel = hiltViewModel(),
-                        navigateToMain = {
-                            showMainScreen = true
-                        }
-                    )
-                }
-            }
-        }
+    @Composable
+    override fun ActivityScreen() {
+        MainScreen()
     }
 }

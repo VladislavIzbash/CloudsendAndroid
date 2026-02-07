@@ -9,19 +9,26 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.jvm.javaio.toByteReadChannel
+import io.ktor.utils.io.streams.asInput
 import kotlinx.serialization.json.Json
 import ru.vizbash.cloudsend.data.dto.AuthorizeRequest
 import ru.vizbash.cloudsend.data.dto.DeviceResponse
 import ru.vizbash.cloudsend.data.dto.RefreshRequest
 import ru.vizbash.cloudsend.data.dto.RegisterRequest
+import ru.vizbash.cloudsend.data.dto.SendRequest
+import ru.vizbash.cloudsend.data.dto.SendResponse
 import ru.vizbash.cloudsend.data.dto.TokensResponse
+import java.io.InputStream
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -37,33 +44,60 @@ private val NON_AUTH_URLS = listOf(
 
 private const val TAG = "CloudSendClient"
 
-@OptIn(ExperimentalUuidApi::class)
 class CloudsendClient(
     private val httpClient: HttpClient,
 ) {
     suspend fun login(login: String, password: String): TokensResponse {
         return httpClient.post("auth/authorize") {
-            contentType(ContentType.Application.Json)
             setBody(AuthorizeRequest(login, password))
         }.body()
     }
 
     private suspend fun refreshTokens(refreshToken: String): TokensResponse {
         return httpClient.post("auth/refresh") {
-            contentType(ContentType.Application.Json)
             setBody(RefreshRequest(refreshToken))
         }.body()
     }
 
     suspend fun registerDevice(uuid: Uuid, name: String) {
         httpClient.post("devices") {
-            contentType(ContentType.Application.Json)
             setBody(RegisterRequest(uuid, name))
         }
     }
 
     suspend fun listDevices(): List<DeviceResponse> {
         return httpClient.get("devices").body()
+    }
+
+    suspend fun requestTransfer(
+        request: SendRequest,
+        senderUuid: Uuid,
+        targetUuid: Uuid,
+    ): SendResponse {
+        return httpClient.post("send") {
+            parameter("sender_uuid", senderUuid)
+            parameter("target_uuid", targetUuid)
+
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun uploadFile(
+        transferUuid: Uuid,
+        inputStream: InputStream,
+        onUploadProgress: (Long) -> Unit,
+    ) {
+        httpClient.post("transfer/upload") {
+            parameter("transfer_uuid", transferUuid)
+
+            inputStream.available()
+            contentType(ContentType.Application.OctetStream)
+            setBody(inputStream.toByteReadChannel())
+
+            onUpload { uploaded, _ ->
+                onUploadProgress(uploaded)
+            }
+        }
     }
 
     companion object {
@@ -79,6 +113,8 @@ class CloudsendClient(
             expectSuccess = true
 
             install(DefaultRequest) {
+                contentType(ContentType.Application.Json)
+
                 if (baseUrl.endsWith('/')) {
                     url(baseUrl)
                 } else {
@@ -94,7 +130,6 @@ class CloudsendClient(
                 bearer {
                     loadTokens {
                         val (access, refresh) = tokenRepository.loadTokens()
-                        println("Access token: $access")
                         access?.let {
                             BearerTokens(access, refresh)
                         }

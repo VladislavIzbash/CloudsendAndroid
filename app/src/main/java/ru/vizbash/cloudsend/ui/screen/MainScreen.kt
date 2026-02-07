@@ -1,6 +1,5 @@
 package ru.vizbash.cloudsend.ui.screen
 
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import kotlinx.serialization.Serializable
 import ru.vizbash.cloudsend.R
+import ru.vizbash.cloudsend.ui.screen.send.SendScreen
 
 @Serializable
 private sealed class Pages {

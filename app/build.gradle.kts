@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -40,6 +42,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
+    }
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -56,6 +64,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigationCompose)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.documentFile)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)

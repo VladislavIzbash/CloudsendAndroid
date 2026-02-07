@@ -22,10 +22,25 @@
             android:label="@string/title_activity_main"
             android:configChanges="keyboard|keyboardHidden"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SendActivity"
+            android:exported="true"
+            android:label="@string/title_activity_send"
+            android:configChanges="keyboard|keyboardHidden"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
     </application>

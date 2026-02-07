@@ -1,6 +1,7 @@
 package ru.vizbash.cloudsend.ui.screen
 
 import android.text.format.Formatter
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -19,7 +22,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -32,58 +37,123 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.vizbash.cloudsend.R
+import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.presentation.TransferViewModel
 import ru.vizbash.cloudsend.presentation.TransferViewModel.State
 import ru.vizbash.cloudsend.presentation.TransferViewModel.TransferState
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
+import ru.vizbash.cloudsend.ui.util.ellipsize
 
 private val ImageSize = 120.dp
+private const val FilenameLimit = 20
 
 @Composable
 fun TransferScreen(
     viewModel: TransferViewModel,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
+    showTopBar: Boolean = false,
 ) {
     val state by viewModel.state.collectAsState()
+
+    var showLeaveConfirmation by remember { mutableStateOf(false) }
+
+    val leaveConfirmationEnabled = state.transferState is TransferState.Initializing ||
+            state.transferState is TransferState.InProgress
+    BackHandler(enabled = leaveConfirmationEnabled) {
+        showLeaveConfirmation = true
+    }
+
+    if (showLeaveConfirmation) {
+        AlertDialog(
+            onDismissRequest = {
+                showLeaveConfirmation = false
+            },
+            title = {
+                Text(stringResource(R.string.screen_transfer__leave_dialog_title))
+            },
+            text = {
+                Text(stringResource(R.string.screen_transfer__leave_dialog_text))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLeaveConfirmation = false
+                        navigateBack()
+                    }
+                ) {
+                    Text(stringResource(R.string.screen_transfer__leave_dialog_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showLeaveConfirmation = false
+                    }
+                ) {
+                    Text(stringResource(R.string.screen_transfer__leave_dialog_cancel))
+                }
+            }
+        )
+    }
 
     TransferScreen(
         modifier = modifier,
         state = state,
+        onBackClick = navigateBack,
+        onRetryClick = viewModel::onRetryClick,
+        onCancelClick = {
+            viewModel.onCancelClick(navigateBack)
+        },
     )
 }
 
 @Composable
 private fun TransferScreen(
     state: State,
+    onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 32.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier.height(300.dp),
+            modifier = Modifier
+                .height(300.dp)
+                .widthIn(max = 300.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             when (state.transferState) {
                 is TransferState.Done -> {
-                    TransferScreenDone(state)
+                    TransferScreenDone(state, onBackClick)
                 }
-                TransferState.Error -> {
-                    TransferScreenError(state)
+
+                is TransferState.Error -> {
+                    TransferScreenError(
+                        state,
+                        state.transferState.error,
+                        onRetryClick,
+                        onBackClick,
+                    )
                 }
+
                 is TransferState.InProgress -> {
-                    TransferScreenInProgress(state, state.transferState)
+                    TransferScreenInProgress(state, state.transferState, onCancelClick)
                 }
+
                 TransferState.Initializing -> {
-                    TransferScreenInitializing(state)
+                    TransferScreenInitializing(state, onCancelClick)
                 }
             }
         }
@@ -94,6 +164,7 @@ private fun TransferScreen(
 private fun TransferScreenInProgress(
     state: State,
     transferState: TransferState.InProgress,
+    onCancelClick: () -> Unit,
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
 
@@ -123,9 +194,10 @@ private fun TransferScreenInProgress(
     Text(
         text = stringResource(
             R.string.screen_transfer__progress_title,
-            state.filename,
+            state.filename.ellipsize(FilenameLimit),
             state.targetDevice,
         ),
+        textAlign = TextAlign.Center,
         style = MaterialTheme.typography.titleMedium,
     )
 
@@ -141,15 +213,16 @@ private fun TransferScreenInProgress(
         style = MaterialTheme.typography.bodyMedium,
     )
 
-    OutlinedButton(
-        onClick = {}
-    ) {
+    OutlinedButton(onClick = onCancelClick) {
         Text(stringResource(R.string.screen_transfer__progress_cancel_button))
     }
 }
 
 @Composable
-private fun TransferScreenInitializing(state: State) {
+private fun TransferScreenInitializing(
+    state: State,
+    onCancelClick: () -> Unit,
+) {
     Box(
         modifier = Modifier.size(ImageSize),
         contentAlignment = Alignment.Center,
@@ -162,15 +235,18 @@ private fun TransferScreenInitializing(state: State) {
         text = stringResource(R.string.screen_transfer__initializing_title, state.targetDevice),
         style = MaterialTheme.typography.titleMedium,
     )
-    OutlinedButton(
-        onClick = {}
-    ) {
+    OutlinedButton(onClick = onCancelClick) {
         Text(stringResource(R.string.screen_transfer__progress_cancel_button))
     }
 }
 
 @Composable
-private fun TransferScreenError(state: State) {
+private fun TransferScreenError(
+    state: State,
+    error: AppError,
+    onRetryClick: () -> Unit,
+    onBackClick: () -> Unit,
+) {
     Image(
         modifier = Modifier.size(ImageSize),
         painter = painterResource(R.drawable.warning),
@@ -180,30 +256,31 @@ private fun TransferScreenError(state: State) {
     Text(
         text = stringResource(
             R.string.screen_transfer__error_title,
-            state.filename,
+            state.filename.ellipsize(FilenameLimit),
             state.targetDevice,
         ),
         style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Center,
     )
     Text(
-        text = stringResource(R.string.screen_transfer__error_text),
+        text = error.message(LocalContext.current),
         style = MaterialTheme.typography.bodyMedium,
+        textAlign = TextAlign.Center,
     )
 
-    OutlinedButton(
-        onClick = {}
-    ) {
+    OutlinedButton(onClick = onRetryClick) {
         Text(stringResource(R.string.screen_transfer__error_retry_button))
     }
-    TextButton(
-        onClick = {}
-    ) {
+    TextButton(onClick = onBackClick) {
         Text(stringResource(R.string.screen_transfer__back_button))
     }
 }
 
 @Composable
-private fun TransferScreenDone(state: State) {
+private fun TransferScreenDone(
+    state: State,
+    onBackClick: () -> Unit,
+) {
     Image(
         modifier = Modifier.size(ImageSize),
         painter = painterResource(R.drawable.check_circle),
@@ -213,14 +290,15 @@ private fun TransferScreenDone(state: State) {
     Text(
         text = stringResource(
             R.string.screen_transfer__done_title,
-            state.filename,
+            state.filename.ellipsize(FilenameLimit),
             state.targetDevice,
         ),
         style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Center,
     )
 
     TextButton(
-        onClick = {}
+        onClick = onBackClick,
     ) {
         Text(stringResource(R.string.screen_transfer__back_button))
     }
@@ -239,7 +317,10 @@ private fun TransferScreenInProgressPreview() {
                     transferredBytes = 20000,
                     totalBytes = 124294,
                 )
-            )
+            ),
+            onCancelClick = {},
+            onRetryClick = {},
+            onBackClick = {},
         )
     }
 }
@@ -253,7 +334,10 @@ private fun TransferScreenInitializingPreview() {
                 filename = "fishki.png",
                 targetDevice = "Macbook Pro",
                 transferState = TransferState.Initializing,
-            )
+            ),
+            onCancelClick = {},
+            onRetryClick = {},
+            onBackClick = {},
         )
     }
 }
@@ -266,8 +350,11 @@ private fun TransferScreenErrorPreview() {
             state = State(
                 filename = "fishki.png",
                 targetDevice = "Macbook Pro",
-                transferState = TransferState.Error,
-            )
+                transferState = TransferState.Error(AppError.General),
+            ),
+            onCancelClick = {},
+            onRetryClick = {},
+            onBackClick = {},
         )
     }
 }
@@ -281,7 +368,10 @@ private fun TransferScreenDonePreview() {
                 filename = "fishki.png",
                 targetDevice = "Macbook Pro",
                 transferState = TransferState.Done,
-            )
+            ),
+            onCancelClick = {},
+            onRetryClick = {},
+            onBackClick = {},
         )
     }
 }

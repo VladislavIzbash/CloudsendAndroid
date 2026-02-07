@@ -1,6 +1,12 @@
 <resources>
+    <string name="error_general">General error</string>
+    <string name="error_document_read">Error reading file</string>
+    <string name="error_network">Network error</string>
+    <string name="error_transfer_rejected">Device rejected transfer</string>
+    <string name="error_target_offline">Target device is offline</string>
     <string name="app_name">CloudSend</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">CloudSend</string>
+    <string name="title_activity_send">Send to device</string>
     <string name="screen_setup__title">Please enter connection data for your server</string>
     <string name="screen_setup__label_base_url">Server base url</string>
     <string name="screen_setup__label_login">Login</string>
@@ -8,6 +14,7 @@
     <string name="screen_setup__label_device_name">Device name</string>
     <string name="screen_setup__button_connect">Connect</string>
     <string name="screen_setup__connect_error_general">Failed to login to server</string>
+    <string name="screen_device_list__title">Choose device</string>
     <string name="screen_device_list__device_online">Online</string>
     <string name="screen_device_list__device_offline">Offline</string>
     <string name="screen_device_list__loading_error">Error loading device list</string>
@@ -20,4 +27,8 @@
     <string name="screen_transfer__progress_title">Sending %s to %s</string>
     <string name="screen_transfer__progress_cancel_button">Cancel</string>
     <string name="screen_transfer__back_button">Go back</string>
+    <string name="screen_transfer__leave_dialog_title">Leave transfer screen?</string>
+    <string name="screen_transfer__leave_dialog_text">Leaving this screen will cancel current file transfer</string>
+    <string name="screen_transfer__leave_dialog_confirm">Confirm</string>
+    <string name="screen_transfer__leave_dialog_cancel">Cancel</string>
 </resources>

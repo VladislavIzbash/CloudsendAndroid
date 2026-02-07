@@ -2,8 +2,10 @@ package ru.vizbash.cloudsend.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,16 +14,23 @@ import kotlinx.coroutines.launch
 import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.domain.ListTargetDevicesInteractor
 
-@HiltViewModel
-class DeviceSelectionViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = DeviceSelectionViewModel.Factory::class)
+class DeviceSelectionViewModel @AssistedInject constructor(
+    @Assisted private val fileUri: String?,
     private val listTargetDevicesInteractor: ListTargetDevicesInteractor,
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(fileUri: String?): DeviceSelectionViewModel
+    }
+
     sealed class State {
         data object Loading : State()
 
         data class Loaded(
             val targetDevices: List<Device>,
-            val pendingDevice: Device? = null,
+            val pendingDevice: Device? = null, // TODO: persist this value across process deaths
         ) : State()
 
         data object Error : State()
@@ -47,13 +56,19 @@ class DeviceSelectionViewModel @Inject constructor(
     fun onDeviceClick(
         device: Device,
         openFilePicker: () -> Unit,
+        navigateToTransfer: (String, Device) -> Unit,
     ) {
         val state = state.value as? State.Loaded ?: return
 
-        _state.update {
-            state.copy(pendingDevice = device)
+        if (fileUri != null) {
+            // file already picked before this screen was opened
+            navigateToTransfer(fileUri, device)
+        } else {
+            _state.update {
+                state.copy(pendingDevice = device)
+            }
+            openFilePicker()
         }
-        openFilePicker()
     }
 
     private suspend fun refreshDevices() {

@@ -11,7 +11,6 @@ import kotlin.uuid.Uuid
 
 private const val TAG = "LoginInteractor"
 
-@OptIn(ExperimentalUuidApi::class)
 class LoginInteractor @Inject constructor(
     private val connectionParamsRepository: ConnectionParamsRepository,
     private val tokenRepository: TokenRepository,

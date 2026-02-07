@@ -1,9 +1,9 @@
 package ru.vizbash.cloudsend.domain
 
-import kotlin.uuid.ExperimentalUuidApi
+import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
+@Serializable
 data class Device(
     val name: String,
     val uuid: Uuid,

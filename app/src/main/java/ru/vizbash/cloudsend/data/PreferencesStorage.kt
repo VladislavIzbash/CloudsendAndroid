@@ -13,7 +13,6 @@ private const val KEY_DEVICE_UUID = "device_uuid"
 private const val KEY_ACCESS_TOKEN = "access_token"
 private const val KEY_REFRESH_TOKEN = "refresh_token"
 
-@OptIn(ExperimentalUuidApi::class)
 class PreferencesStorage @Inject constructor(
     @param:ApplicationContext
     private val context: Context
