@@ -27,6 +27,7 @@
     <string name="screen_transfer__progress_title">Sending %s to %s</string>
     <string name="screen_transfer__progress_cancel_button">Cancel</string>
     <string name="screen_transfer__back_button">Go back</string>
+    <string name="screen_transfer__close_button">Exit</string>
     <string name="screen_transfer__leave_dialog_title">Leave transfer screen?</string>
     <string name="screen_transfer__leave_dialog_text">Leaving this screen will cancel current file transfer</string>
     <string name="screen_transfer__leave_dialog_confirm">Confirm</string>

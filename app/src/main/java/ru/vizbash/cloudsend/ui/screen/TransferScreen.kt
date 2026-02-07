@@ -56,7 +56,7 @@ fun TransferScreen(
     viewModel: TransferViewModel,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    showTopBar: Boolean = false,
+    showCloseAsBack: Boolean = false,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -103,6 +103,7 @@ fun TransferScreen(
 
     TransferScreen(
         modifier = modifier,
+        showCloseAsBack = showCloseAsBack,
         state = state,
         onBackClick = navigateBack,
         onRetryClick = viewModel::onRetryClick,
@@ -115,6 +116,7 @@ fun TransferScreen(
 @Composable
 private fun TransferScreen(
     state: State,
+    showCloseAsBack: Boolean,
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
     onRetryClick: () -> Unit,
@@ -136,13 +138,14 @@ private fun TransferScreen(
         ) {
             when (state.transferState) {
                 is TransferState.Done -> {
-                    TransferScreenDone(state, onBackClick)
+                    TransferScreenDone(state, showCloseAsBack, onBackClick)
                 }
 
                 is TransferState.Error -> {
                     TransferScreenError(
                         state,
                         state.transferState.error,
+                        showCloseAsBack,
                         onRetryClick,
                         onBackClick,
                     )
@@ -244,6 +247,7 @@ private fun TransferScreenInitializing(
 private fun TransferScreenError(
     state: State,
     error: AppError,
+    showCloseAsBack: Boolean,
     onRetryClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -271,14 +275,13 @@ private fun TransferScreenError(
     OutlinedButton(onClick = onRetryClick) {
         Text(stringResource(R.string.screen_transfer__error_retry_button))
     }
-    TextButton(onClick = onBackClick) {
-        Text(stringResource(R.string.screen_transfer__back_button))
-    }
+    BackButton(onBackClick, showCloseAsBack)
 }
 
 @Composable
 private fun TransferScreenDone(
     state: State,
+    showCloseAsBack: Boolean,
     onBackClick: () -> Unit,
 ) {
     Image(
@@ -297,10 +300,20 @@ private fun TransferScreenDone(
         textAlign = TextAlign.Center,
     )
 
-    TextButton(
-        onClick = onBackClick,
-    ) {
-        Text(stringResource(R.string.screen_transfer__back_button))
+    BackButton(onBackClick, showCloseAsBack)
+}
+
+@Composable
+private fun BackButton(
+    onClick: () -> Unit,
+    showCloseAsBack: Boolean,
+) {
+    TextButton(onClick = onClick) {
+        if (showCloseAsBack) {
+            Text(stringResource(R.string.screen_transfer__close_button))
+        } else {
+            Text(stringResource(R.string.screen_transfer__back_button))
+        }
     }
 }
 
@@ -318,6 +331,7 @@ private fun TransferScreenInProgressPreview() {
                     totalBytes = 124294,
                 )
             ),
+            showCloseAsBack = false,
             onCancelClick = {},
             onRetryClick = {},
             onBackClick = {},
@@ -335,6 +349,7 @@ private fun TransferScreenInitializingPreview() {
                 targetDevice = "Macbook Pro",
                 transferState = TransferState.Initializing,
             ),
+            showCloseAsBack = false,
             onCancelClick = {},
             onRetryClick = {},
             onBackClick = {},
@@ -352,6 +367,7 @@ private fun TransferScreenErrorPreview() {
                 targetDevice = "Macbook Pro",
                 transferState = TransferState.Error(AppError.General),
             ),
+            showCloseAsBack = false,
             onCancelClick = {},
             onRetryClick = {},
             onBackClick = {},
@@ -369,6 +385,7 @@ private fun TransferScreenDonePreview() {
                 targetDevice = "Macbook Pro",
                 transferState = TransferState.Done,
             ),
+            showCloseAsBack = false,
             onCancelClick = {},
             onRetryClick = {},
             onBackClick = {},

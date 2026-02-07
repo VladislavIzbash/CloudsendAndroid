@@ -37,9 +37,10 @@ sealed class SendScreenPage : NavKey {
 fun SendScreen(
     modifier: Modifier = Modifier,
     backStack: NavBackStack<NavKey> = rememberNavBackStack(SendScreenPage.DeviceSelection),
-    showClose: Boolean = false,
+    showCloseButton: Boolean = false,
+    exitAfterTransfer: Boolean = false,
     fileUri: String? = null,
-    onCloseClick: () -> Unit = {},
+    onClose: () -> Unit = {},
 ) {
     NavDisplay(
         modifier = modifier,
@@ -64,8 +65,8 @@ fun SendScreen(
                     navigateToTransfer = { uri, targetDevice ->
                         backStack.add(SendScreenPage.Transfer(uri, targetDevice))
                     },
-                    showClose = showClose,
-                    onCloseClick = onCloseClick,
+                    showClose = showCloseButton,
+                    onCloseClick = onClose,
                 )
             }
 
@@ -76,8 +77,13 @@ fun SendScreen(
                 TransferScreen(
                     viewModel = viewModel,
                     navigateBack = {
-                        backStack.removeLastOrNull()
-                    }
+                        if (exitAfterTransfer) {
+                            onClose()
+                        } else {
+                            backStack.removeLastOrNull()
+                        }
+                    },
+                    showCloseAsBack = exitAfterTransfer,
                 )
             }
         }

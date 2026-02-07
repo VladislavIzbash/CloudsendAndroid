@@ -2,6 +2,8 @@ package ru.vizbash.cloudsend
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import androidx.compose.foundation.background
@@ -17,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.vizbash.cloudsend.domain.CheckSetupDoneInteractor
 import ru.vizbash.cloudsend.ui.screen.send.SendScreen
 import javax.inject.Inject
+import kotlin.uuid.Uuid
 
 private const val TAG = "SendActivity"
 
@@ -25,16 +28,19 @@ class SendActivity : BaseActivity() {
     @Inject
     override lateinit var checkSetupDoneInteractor: CheckSetupDoneInteractor
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+//        val shortCuts = listOf(
+//            ShortcutInfoCompat.Builder(this, "dasd")
+//                .setC
+//        )
+//        ShortcutManagerCompat.setDynamicShortcuts(this, )
+    }
+
     @Composable
     override fun ActivityScreen() {
-        val fileUri = remember { handleSendIntent(intent)?.toString() }
-
-//        StandaloneSendScreen(
-//            fileUri = fileUri,
-//            onCloseClick = {
-//                finish()
-//            }
-//        )
+        val (fileUri, targetUuid) = remember { handleSendIntent(intent) }
 
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
             SendScreen(
@@ -42,11 +48,12 @@ class SendActivity : BaseActivity() {
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .safeDrawingPadding(),
-                showClose = true,
-                onCloseClick = {
+                showCloseButton = true,
+                exitAfterTransfer = true,
+                onClose = {
                     finish()
                 },
-                fileUri = fileUri,
+                fileUri = fileUri?.toString(),
             )
         }
 
@@ -55,10 +62,10 @@ class SendActivity : BaseActivity() {
 }
 
 @Suppress("DEPRECATION")
-private fun handleSendIntent(intent: Intent): Uri? {
+private fun handleSendIntent(intent: Intent): Pair<Uri?, Uuid?> {
     if (intent.action != Intent.ACTION_SEND) {
         Log.e(TAG, "Cannot handle intent action ${intent.action}")
-        return null
+        return Pair(null, null)
     }
 
     val uri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
@@ -66,5 +73,11 @@ private fun handleSendIntent(intent: Intent): Uri? {
         Log.e(TAG, "No uri provided in send intent")
     }
 
-    return uri
+    val targetUuid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)?.let(Uuid::parse)
+    } else {
+        null
+    }
+
+    return Pair(uri, targetUuid)
 }
