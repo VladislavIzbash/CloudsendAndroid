@@ -1,9 +1,7 @@
 package ru.vizbash.cloudsend.domain.transfer
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
-import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.vizbash.cloudsend.data.CloudsendClient
 import ru.vizbash.cloudsend.data.document.DocumentResolver

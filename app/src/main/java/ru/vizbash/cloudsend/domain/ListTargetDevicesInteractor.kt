@@ -4,7 +4,6 @@ import android.util.Log
 import ru.vizbash.cloudsend.data.CloudsendClient
 import ru.vizbash.cloudsend.data.ConnectionParamsRepository
 import javax.inject.Inject
-import kotlin.uuid.ExperimentalUuidApi
 
 private val TAG = "ListTargetDevicesInteractor"
 

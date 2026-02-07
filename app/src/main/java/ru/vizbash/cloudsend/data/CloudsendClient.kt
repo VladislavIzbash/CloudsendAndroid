@@ -19,7 +19,6 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
-import io.ktor.utils.io.streams.asInput
 import kotlinx.serialization.json.Json
 import ru.vizbash.cloudsend.data.dto.AuthorizeRequest
 import ru.vizbash.cloudsend.data.dto.DeviceResponse
@@ -29,7 +28,6 @@ import ru.vizbash.cloudsend.data.dto.SendRequest
 import ru.vizbash.cloudsend.data.dto.SendResponse
 import ru.vizbash.cloudsend.data.dto.TokensResponse
 import java.io.InputStream
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 private val JSON = Json {
