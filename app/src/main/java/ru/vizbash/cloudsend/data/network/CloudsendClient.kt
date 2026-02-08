@@ -20,7 +20,6 @@ import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import kotlinx.serialization.json.Json
-import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import ru.vizbash.cloudsend.data.network.dto.AuthorizeRequest
 import ru.vizbash.cloudsend.data.network.dto.DeviceResponse
 import ru.vizbash.cloudsend.data.network.dto.RefreshRequest
@@ -28,8 +27,8 @@ import ru.vizbash.cloudsend.data.network.dto.RegisterRequest
 import ru.vizbash.cloudsend.data.network.dto.SendRequest
 import ru.vizbash.cloudsend.data.network.dto.SendResponse
 import ru.vizbash.cloudsend.data.network.dto.TokensResponse
+import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import java.io.InputStream
-import kotlin.uuid.Uuid
 
 private val JSON = Json {
     ignoreUnknownKeys = true
@@ -58,7 +57,7 @@ class CloudsendClient(
         }.body()
     }
 
-    suspend fun registerDevice(uuid: Uuid, name: String) {
+    suspend fun registerDevice(uuid: String, name: String) {
         httpClient.post("devices") {
             setBody(RegisterRequest(uuid, name))
         }
@@ -70,8 +69,8 @@ class CloudsendClient(
 
     suspend fun requestTransfer(
         request: SendRequest,
-        senderUuid: Uuid,
-        targetUuid: Uuid,
+        senderUuid: String,
+        targetUuid: String,
     ): SendResponse {
         return httpClient.post("send") {
             parameter("sender_uuid", senderUuid)
@@ -82,7 +81,7 @@ class CloudsendClient(
     }
 
     suspend fun uploadFile(
-        transferUuid: Uuid,
+        transferUuid: String,
         inputStream: InputStream,
         onUploadProgress: (Long) -> Unit,
     ) {

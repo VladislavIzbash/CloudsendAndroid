@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlin.uuid.Uuid
 
 private const val PREF_NAME = "data"
 private const val KEY_BASE_URL = "base_url"
@@ -34,7 +33,7 @@ class PreferencesStorage @Inject constructor(
         val deviceUuid = sharedPrefs.getString(KEY_DEVICE_UUID, null)
             ?: throw RuntimeException("Base url is not initialized")
 
-        return ConnectionParams(baseUrl, Uuid.parse(deviceUuid))
+        return ConnectionParams(baseUrl, deviceUuid)
     }
 
     override suspend fun saveTokens(accessToken: String, refreshToken: String) {

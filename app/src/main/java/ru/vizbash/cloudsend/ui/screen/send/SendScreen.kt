@@ -55,9 +55,10 @@ fun SendScreen(
         ),
         entryProvider = entryProvider {
             entry<SendScreenPage.DeviceSelection> { key ->
-                val viewModel = hiltViewModel<DeviceSelectionViewModel, DeviceSelectionViewModel.Factory> {
-                    it.create(key.fileUri)
-                }
+                val viewModel =
+                    hiltViewModel<DeviceSelectionViewModel, DeviceSelectionViewModel.Factory> {
+                        it.create(key.fileUri)
+                    }
 
                 DeviceSelectionScreen(
                     viewModel = viewModel,
@@ -89,7 +90,8 @@ fun SendScreen(
     )
 }
 
-private fun <T : Any> slideTransition(): AnimatedContentTransitionScope<Scene<T>>.() -> ContentTransform = {
-    slideInHorizontally(initialOffsetX = { -it }) togetherWith
-            slideOutHorizontally(targetOffsetX = { it })
-}
+private fun <T : Any> slideTransition(): AnimatedContentTransitionScope<Scene<T>>.() -> ContentTransform =
+    {
+        slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+    }

@@ -76,11 +76,13 @@ fun MainScreen(
             Page.Receive -> {
                 Text("receive")
             }
+
             Page.Send -> {
                 SendScreen(
                     modifier = Modifier.padding(contentPadding),
                 )
             }
+
             Page.History -> {
                 Text("history")
             }

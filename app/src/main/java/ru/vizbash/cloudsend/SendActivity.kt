@@ -15,15 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vizbash.cloudsend.domain.CheckSetupDoneInteractor
 import ru.vizbash.cloudsend.ui.screen.send.SendScreen
-import ru.vizbash.cloudsend.ui.screen.send.SendScreenPage
 import javax.inject.Inject
-import kotlin.uuid.Uuid
 
 private const val TAG = "SendActivity"
 
@@ -44,7 +39,7 @@ class SendActivity : BaseActivity() {
 
     @Composable
     override fun ActivityScreen() {
-        val (fileUri, targetUuid) = remember { handleSendIntent(intent) }
+        val (_, _) = remember { handleSendIntent(intent) }
 
 //        val backStack = if (targetUuid != null) {
 //            rememberNavBackStack(
@@ -74,7 +69,7 @@ class SendActivity : BaseActivity() {
 }
 
 @Suppress("DEPRECATION")
-private fun handleSendIntent(intent: Intent): Pair<String?, Uuid?> {
+private fun handleSendIntent(intent: Intent): Pair<String?, String?> {
     if (intent.action != Intent.ACTION_SEND) {
         Log.e(TAG, "Cannot handle intent action ${intent.action}")
         return Pair(null, null)
@@ -86,7 +81,7 @@ private fun handleSendIntent(intent: Intent): Pair<String?, Uuid?> {
     }
 
     val targetUuid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)?.let(Uuid::parse)
+        intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
     } else {
         null
     }

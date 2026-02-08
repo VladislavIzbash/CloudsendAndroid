@@ -2,7 +2,6 @@ package ru.vizbash.cloudsend.data.network.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.uuid.Uuid
 
 @Serializable
 sealed class SendRequest {
@@ -26,7 +25,7 @@ sealed class SendRequest {
 @Serializable
 data class SendResponse(
     @SerialName("transfer_uuid")
-    val transferUuid: Uuid? = null,
+    val transferUuid: String? = null,
 )
 
 @Serializable
@@ -35,7 +34,7 @@ sealed class SendMessage {
     @SerialName("text")
     data class Text(
         @SerialName("sender")
-        val sender: Uuid,
+        val sender: String,
         @SerialName("content")
         val content: String,
     ) : SendMessage()
@@ -44,9 +43,9 @@ sealed class SendMessage {
     @SerialName("file")
     data class File(
         @SerialName("sender")
-        val sender: Uuid,
+        val sender: String,
         @SerialName("transfer_uuid")
-        val transferUuid: Uuid,
+        val transferUuid: String,
         @SerialName("filename")
         val filename: String,
         @SerialName("file_size")

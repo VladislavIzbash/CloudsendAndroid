@@ -6,10 +6,12 @@ import ru.vizbash.cloudsend.data.persistence.ConnectionParams
 import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import javax.inject.Inject
+import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 private const val TAG = "LoginInteractor"
 
+@OptIn(ExperimentalUuidApi::class)
 class LoginInteractor @Inject constructor(
     private val connectionParamsRepository: ConnectionParamsRepository,
     private val tokenRepository: TokenRepository,
@@ -29,7 +31,7 @@ class LoginInteractor @Inject constructor(
 
             tokenRepository.saveTokens(tokens.accessToken, tokens.refreshToken)
 
-            val deviceUuid = Uuid.random()
+            val deviceUuid = Uuid.random().toString()
             client.registerDevice(deviceUuid, deviceName)
             Log.i(TAG, "Registered self as $deviceName with uuid=$deviceUuid")
 

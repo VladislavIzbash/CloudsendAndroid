@@ -2,14 +2,13 @@ package ru.vizbash.cloudsend.domain.transfer
 
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.http.HttpStatusCode
-import ru.vizbash.cloudsend.data.network.CloudsendClient
-import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.document.DocumentResolver
+import ru.vizbash.cloudsend.data.network.CloudsendClient
 import ru.vizbash.cloudsend.data.network.dto.SendRequest
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.handleCommonExceptions
 import javax.inject.Inject
-import kotlin.uuid.Uuid
 
 private const val TAG = "SendFileTransferRequestInteractor"
 
@@ -18,7 +17,7 @@ class SendFileTransferRequestInteractor @Inject constructor(
     private val cloudsendClient: CloudsendClient,
     private val connectionParamsRepository: ConnectionParamsRepository,
 ) {
-    suspend operator fun invoke(fileUri: String, targetUuid: Uuid): Result<Uuid> {
+    suspend operator fun invoke(fileUri: String, targetUuid: String): Result<String> {
         return handleCommonExceptions(TAG) {
             val (name, size) = documentResolver.resolve(fileUri)
                 ?: return@handleCommonExceptions Result.failure(AppError.DocumentRead)

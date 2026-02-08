@@ -33,7 +33,6 @@ import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.presentation.DeviceSelectionViewModel
 import ru.vizbash.cloudsend.presentation.DeviceSelectionViewModel.State
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
-import kotlin.uuid.Uuid
 
 @Composable
 fun DeviceSelectionScreen(
@@ -122,6 +121,7 @@ private fun DeviceSelectionScreenContent(
                 )
             }
         }
+
         State.NoDevices -> {
             Centered {
                 Text(
@@ -131,11 +131,13 @@ private fun DeviceSelectionScreenContent(
                 )
             }
         }
+
         State.Loading -> {
             Centered {
                 CircularProgressIndicator()
             }
         }
+
         is State.Loaded -> {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -197,10 +199,10 @@ private fun SendScreenPreview() {
         DeviceSelectionScreen(
             state = State.Loaded(
                 targetDevices = listOf(
-                    Device("Device 1", Uuid.NIL, true),
-                    Device("Device 2", Uuid.NIL, true),
-                    Device("Device 3", Uuid.NIL, true),
-                    Device("Device 4", Uuid.NIL, false),
+                    Device("Device 1", "", true),
+                    Device("Device 2", "", true),
+                    Device("Device 3", "", true),
+                    Device("Device 4", "", false),
                 ),
             ),
             onDeviceClick = {},
