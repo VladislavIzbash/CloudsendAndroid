@@ -1,8 +1,8 @@
 package ru.vizbash.cloudsend.domain
 
 import android.util.Log
-import ru.vizbash.cloudsend.data.CloudsendClient
-import ru.vizbash.cloudsend.data.ConnectionParamsRepository
+import ru.vizbash.cloudsend.data.network.CloudsendClient
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import javax.inject.Inject
 
 private val TAG = "ListTargetDevicesInteractor"

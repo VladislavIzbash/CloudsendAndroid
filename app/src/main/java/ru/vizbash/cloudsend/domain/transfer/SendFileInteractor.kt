@@ -3,7 +3,7 @@ package ru.vizbash.cloudsend.domain.transfer
 import android.content.Context
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import ru.vizbash.cloudsend.data.CloudsendClient
+import ru.vizbash.cloudsend.data.network.CloudsendClient
 import ru.vizbash.cloudsend.data.document.DocumentResolver
 import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.handleCommonExceptions

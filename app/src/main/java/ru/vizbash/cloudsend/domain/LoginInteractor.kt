@@ -1,10 +1,10 @@
 package ru.vizbash.cloudsend.domain
 
 import android.util.Log
-import ru.vizbash.cloudsend.data.CloudsendClientFactory
-import ru.vizbash.cloudsend.data.ConnectionParams
-import ru.vizbash.cloudsend.data.ConnectionParamsRepository
-import ru.vizbash.cloudsend.data.TokenRepository
+import ru.vizbash.cloudsend.data.network.CloudsendClientFactory
+import ru.vizbash.cloudsend.data.persistence.ConnectionParams
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
+import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import javax.inject.Inject
 import kotlin.uuid.Uuid
 

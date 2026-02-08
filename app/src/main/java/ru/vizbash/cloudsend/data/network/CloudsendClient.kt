@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.data
+package ru.vizbash.cloudsend.data.network
 
 import android.util.Log
 import io.ktor.client.HttpClient
@@ -20,13 +20,14 @@ import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import kotlinx.serialization.json.Json
-import ru.vizbash.cloudsend.data.dto.AuthorizeRequest
-import ru.vizbash.cloudsend.data.dto.DeviceResponse
-import ru.vizbash.cloudsend.data.dto.RefreshRequest
-import ru.vizbash.cloudsend.data.dto.RegisterRequest
-import ru.vizbash.cloudsend.data.dto.SendRequest
-import ru.vizbash.cloudsend.data.dto.SendResponse
-import ru.vizbash.cloudsend.data.dto.TokensResponse
+import ru.vizbash.cloudsend.data.persistence.TokenRepository
+import ru.vizbash.cloudsend.data.network.dto.AuthorizeRequest
+import ru.vizbash.cloudsend.data.network.dto.DeviceResponse
+import ru.vizbash.cloudsend.data.network.dto.RefreshRequest
+import ru.vizbash.cloudsend.data.network.dto.RegisterRequest
+import ru.vizbash.cloudsend.data.network.dto.SendRequest
+import ru.vizbash.cloudsend.data.network.dto.SendResponse
+import ru.vizbash.cloudsend.data.network.dto.TokensResponse
 import java.io.InputStream
 import kotlin.uuid.Uuid
 

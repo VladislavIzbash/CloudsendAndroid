@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.data.dto
+package ru.vizbash.cloudsend.data.network.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

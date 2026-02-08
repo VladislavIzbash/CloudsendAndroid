@@ -2,10 +2,10 @@ package ru.vizbash.cloudsend.domain.transfer
 
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.http.HttpStatusCode
-import ru.vizbash.cloudsend.data.CloudsendClient
-import ru.vizbash.cloudsend.data.ConnectionParamsRepository
+import ru.vizbash.cloudsend.data.network.CloudsendClient
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.document.DocumentResolver
-import ru.vizbash.cloudsend.data.dto.SendRequest
+import ru.vizbash.cloudsend.data.network.dto.SendRequest
 import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.handleCommonExceptions
 import javax.inject.Inject

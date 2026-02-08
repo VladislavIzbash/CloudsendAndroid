@@ -5,6 +5,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.vizbash.cloudsend.data.network.CloudsendClient
+import ru.vizbash.cloudsend.data.network.CloudsendClientFactory
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
+import ru.vizbash.cloudsend.data.persistence.PreferencesStorage
+import ru.vizbash.cloudsend.data.persistence.TokenRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

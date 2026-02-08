@@ -1,6 +1,6 @@
 package ru.vizbash.cloudsend.domain
 
-import ru.vizbash.cloudsend.data.ConnectionParamsRepository
+import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import javax.inject.Inject
 
 class CheckSetupDoneInteractor @Inject constructor(

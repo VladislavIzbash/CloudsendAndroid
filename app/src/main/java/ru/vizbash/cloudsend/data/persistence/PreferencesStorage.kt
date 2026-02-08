@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.data
+package ru.vizbash.cloudsend.data.persistence
 
 import android.content.Context
 import androidx.core.content.edit

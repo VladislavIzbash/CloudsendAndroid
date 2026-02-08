@@ -27,19 +27,18 @@ import ru.vizbash.cloudsend.ui.screen.TransferScreen
 @Serializable
 sealed class SendScreenPage : NavKey {
     @Serializable
-    data object DeviceSelection : SendScreenPage()
+    data class DeviceSelection(val fileUri: String?) : SendScreenPage()
 
     @Serializable
-    data class Transfer(val uri: String, val targetDevice: Device) : SendScreenPage()
+    data class Transfer(val fileUri: String, val targetDevice: Device) : SendScreenPage()
 }
 
 @Composable
 fun SendScreen(
     modifier: Modifier = Modifier,
-    backStack: NavBackStack<NavKey> = rememberNavBackStack(SendScreenPage.DeviceSelection),
+    backStack: NavBackStack<NavKey> = rememberNavBackStack(SendScreenPage.DeviceSelection(null)),
     showCloseButton: Boolean = false,
     exitAfterTransfer: Boolean = false,
-    fileUri: String? = null,
     onClose: () -> Unit = {},
 ) {
     NavDisplay(
@@ -55,9 +54,9 @@ fun SendScreen(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         entryProvider = entryProvider {
-            entry<SendScreenPage.DeviceSelection> {
+            entry<SendScreenPage.DeviceSelection> { key ->
                 val viewModel = hiltViewModel<DeviceSelectionViewModel, DeviceSelectionViewModel.Factory> {
-                    it.create(fileUri)
+                    it.create(key.fileUri)
                 }
 
                 DeviceSelectionScreen(
@@ -72,7 +71,7 @@ fun SendScreen(
 
             entry<SendScreenPage.Transfer> { key ->
                 val viewModel = hiltViewModel<TransferViewModel, TransferViewModel.Factory> {
-                    it.create(key.uri, key.targetDevice)
+                    it.create(key.fileUri, key.targetDevice)
                 }
                 TransferScreen(
                     viewModel = viewModel,

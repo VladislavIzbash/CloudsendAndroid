@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.data
+package ru.vizbash.cloudsend.data.persistence
 
 import kotlin.uuid.Uuid
 
