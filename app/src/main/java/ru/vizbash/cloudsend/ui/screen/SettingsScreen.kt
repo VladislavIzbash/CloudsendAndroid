@@ -29,7 +29,7 @@ import ru.vizbash.cloudsend.data.persistence.settings.Setting
 import ru.vizbash.cloudsend.presentation.SettingsViewModel
 import ru.vizbash.cloudsend.presentation.SettingsViewModel.State
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
-import ru.vizbash.cloudsend.ui.util.takePersistablePermission
+import ru.vizbash.cloudsend.util.takePersistablePermission
 
 @Composable
 fun SettingsScreen(

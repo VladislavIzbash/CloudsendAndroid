@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.core.content.pm.ShortcutManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.vizbash.cloudsend.data.persistence.db.DeviceDao
-import ru.vizbash.cloudsend.ui.util.createDeviceShortcut
+import ru.vizbash.cloudsend.util.createDeviceShortcut
 import javax.inject.Inject
 
 private const val TAG = "UpdateDirectShareShortcutsInteractor"

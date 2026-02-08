@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.ui.util
+package ru.vizbash.cloudsend.util
 
 import android.content.Context
 import android.content.Intent

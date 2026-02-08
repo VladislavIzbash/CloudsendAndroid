@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.ui.screen
+package ru.vizbash.cloudsend.ui.screen.send
 
 import android.text.format.Formatter
 import androidx.activity.compose.BackHandler
@@ -46,7 +46,7 @@ import ru.vizbash.cloudsend.presentation.TransferViewModel
 import ru.vizbash.cloudsend.presentation.TransferViewModel.State
 import ru.vizbash.cloudsend.presentation.TransferViewModel.TransferState
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
-import ru.vizbash.cloudsend.ui.util.ellipsize
+import ru.vizbash.cloudsend.util.ellipsize
 
 private val ImageSize = 120.dp
 private const val FilenameLimit = 20

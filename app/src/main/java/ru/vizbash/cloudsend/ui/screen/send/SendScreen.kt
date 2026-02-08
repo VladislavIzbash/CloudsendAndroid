@@ -22,7 +22,6 @@ import kotlinx.serialization.Serializable
 import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.presentation.DeviceSelectionViewModel
 import ru.vizbash.cloudsend.presentation.TransferViewModel
-import ru.vizbash.cloudsend.ui.screen.TransferScreen
 
 @Serializable
 sealed class SendScreenPage : NavKey {

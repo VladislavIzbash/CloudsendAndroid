@@ -12,8 +12,8 @@ import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.domain.handleCommonExceptions
-import ru.vizbash.cloudsend.ui.util.SEND_CAPABILITY
-import ru.vizbash.cloudsend.ui.util.createDeviceShortcut
+import ru.vizbash.cloudsend.util.SEND_CAPABILITY
+import ru.vizbash.cloudsend.util.createDeviceShortcut
 import javax.inject.Inject
 
 private const val TAG = "SendFileTransferRequestInteractor"

@@ -1,4 +1,4 @@
-package ru.vizbash.cloudsend.ui.util
+package ru.vizbash.cloudsend.util
 
 fun String.ellipsize(maxLength: Int): String {
     return if (this.length <= maxLength) {
