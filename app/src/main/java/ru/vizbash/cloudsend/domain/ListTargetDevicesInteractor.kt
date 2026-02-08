@@ -1,6 +1,5 @@
 package ru.vizbash.cloudsend.domain
 
-import android.util.Log
 import ru.vizbash.cloudsend.data.network.CloudsendClient
 import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.persistence.db.DeviceDao
@@ -14,8 +13,8 @@ class ListTargetDevicesInteractor @Inject constructor(
     private val connectionParamsRepository: ConnectionParamsRepository,
     private val deviceDao: DeviceDao,
 ) {
-    suspend operator fun invoke(): List<Device>? {
-        return try {
+    suspend operator fun invoke(): Result<List<Device>> {
+        return handleCommonExceptions(TAG) {
             val selfUuid = connectionParamsRepository.get().deviceUuid
             val devices = cloudsendClient.listDevices()
                 .filter { it.uuid != selfUuid }
@@ -32,11 +31,7 @@ class ListTargetDevicesInteractor @Inject constructor(
                     DeviceEntity(it.uuid, it.name)
                 }
             )
-            devices
-        } catch (e: Exception) {
-            Log.e(TAG, "Error loading device list: ${e.message}")
-            e.printStackTrace()
-            null
+            Result.success(devices)
         }
     }
 }

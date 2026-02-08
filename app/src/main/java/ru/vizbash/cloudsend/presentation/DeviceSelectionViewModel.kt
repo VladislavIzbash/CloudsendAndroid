@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.domain.ListTargetDevicesInteractor
 
@@ -33,7 +34,9 @@ class DeviceSelectionViewModel @AssistedInject constructor(
             val pendingDevice: Device? = null, // TODO: persist this value across process deaths
         ) : State()
 
-        data object Error : State()
+        data class Error(
+            val error: AppError,
+        ) : State()
 
         data object NoDevices : State()
     }
@@ -44,13 +47,7 @@ class DeviceSelectionViewModel @AssistedInject constructor(
     private var refreshJob: Job? = null
 
     fun onResume() {
-        if (refreshJob != null) {
-            return
-        }
-
-        refreshJob = viewModelScope.launch {
-            refreshDevices()
-        }
+        refreshDevices()
     }
 
     fun onDeviceClick(
@@ -71,16 +68,27 @@ class DeviceSelectionViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun refreshDevices() {
-        val devices = listTargetDevicesInteractor()
-        _state.value = when {
-            devices == null -> State.Error
-            devices.isEmpty() -> State.NoDevices
-            else -> {
-                State.Loaded(
-                    targetDevices = devices.sortedByDescending(Device::isOnline)
-                )
+    fun onRefreshClick() {
+        refreshDevices()
+    }
+
+    private fun refreshDevices() {
+        if (refreshJob?.isActive == true) {
+            return
+        }
+
+        refreshJob = viewModelScope.launch {
+            val devices = listTargetDevicesInteractor().getOrElse {
+                _state.value = State.Error(it as AppError)
+                return@launch
             }
+            if (devices.isEmpty()) {
+                _state.value = State.NoDevices
+            }
+
+            _state.value = State.Loaded(
+                targetDevices = devices.sortedByDescending(Device::isOnline)
+            )
         }
     }
 }

@@ -3,35 +3,39 @@ package ru.vizbash.cloudsend.ui.screen.send
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import ru.vizbash.cloudsend.R
+import ru.vizbash.cloudsend.domain.AppError
 import ru.vizbash.cloudsend.domain.Device
 import ru.vizbash.cloudsend.presentation.DeviceSelectionViewModel
 import ru.vizbash.cloudsend.presentation.DeviceSelectionViewModel.State
+import ru.vizbash.cloudsend.ui.component.CenteredColumnLayout
+import ru.vizbash.cloudsend.ui.component.CenteredColumnLayoutArt
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
 
 @Composable
@@ -72,6 +76,7 @@ fun DeviceSelectionScreen(
                 navigateToTransfer = navigateToTransfer,
             )
         },
+        onRefreshClick = viewModel::onRefreshClick,
     )
 }
 
@@ -80,6 +85,7 @@ fun DeviceSelectionScreen(
 private fun DeviceSelectionScreen(
     state: State,
     onDeviceClick: (Device) -> Unit,
+    onRefreshClick: () -> Unit,
     modifier: Modifier = Modifier,
     onCloseClick: () -> Unit = {},
     showClose: Boolean = false,
@@ -102,6 +108,7 @@ private fun DeviceSelectionScreen(
         DeviceSelectionScreenContent(
             state,
             onDeviceClick,
+            onRefreshClick,
         )
     }
 }
@@ -110,32 +117,46 @@ private fun DeviceSelectionScreen(
 private fun DeviceSelectionScreenContent(
     state: State,
     onDeviceClick: (Device) -> Unit,
+    onRefreshClick: () -> Unit,
 ) {
     when (state) {
-        State.Error -> {
-            Centered {
-                Text(
-                    text = stringResource(R.string.screen_device_list__loading_error),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+        is State.Error -> {
+            CenteredColumnLayout(
+                image = {
+                    CenteredColumnLayoutArt(painterResource(R.drawable.warning))
+                },
+                title = stringResource(R.string.screen_device_list__loading_error),
+                text = state.error.message(LocalContext.current),
+            ) {
+                OutlinedButton(onClick = onRefreshClick) {
+                    Text(stringResource(R.string.screen_device_list__refresh_button))
+                }
             }
         }
 
         State.NoDevices -> {
-            Centered {
-                Text(
-                    text = stringResource(R.string.screen_device_list__no_devices),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            CenteredColumnLayout(
+                image = {
+                    CenteredColumnLayoutArt(painterResource(R.drawable.devices))
+                },
+                title = stringResource(R.string.screen_device_list__empty_title),
+                text = stringResource(R.string.screen_device_list__empty_text)
+            ) {
+                OutlinedButton(onClick = onRefreshClick) {
+                    Text(stringResource(R.string.screen_device_list__refresh_button))
+                }
             }
         }
 
         State.Loading -> {
-            Centered {
-                CircularProgressIndicator()
-            }
+            CenteredColumnLayout(
+                image = {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(56.dp)
+                    )
+                },
+                title = stringResource(R.string.screen_device_list__loading),
+            )
         }
 
         is State.Loaded -> {
@@ -153,17 +174,6 @@ private fun DeviceSelectionScreenContent(
             }
         }
     }
-}
-
-@Composable
-private fun Centered(
-    content: @Composable BoxScope.() -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-        content = content,
-    )
 }
 
 @Composable
@@ -206,6 +216,7 @@ private fun SendScreenPreview() {
                 ),
             ),
             onDeviceClick = {},
+            onRefreshClick = {},
         )
     }
 }
@@ -217,6 +228,7 @@ private fun SendScreenLoadingPreview() {
         DeviceSelectionScreen(
             state = State.Loading,
             onDeviceClick = {},
+            onRefreshClick = {},
         )
     }
 }
@@ -226,8 +238,9 @@ private fun SendScreenLoadingPreview() {
 private fun SendScreenErrorPreview() {
     CloudSendTheme {
         DeviceSelectionScreen(
-            state = State.Error,
+            state = State.Error(AppError.General),
             onDeviceClick = {},
+            onRefreshClick = {},
         )
     }
 }
@@ -239,6 +252,7 @@ private fun SendScreenEmptyPreview() {
         DeviceSelectionScreen(
             state = State.NoDevices,
             onDeviceClick = {},
+            onRefreshClick = {},
         )
     }
 }

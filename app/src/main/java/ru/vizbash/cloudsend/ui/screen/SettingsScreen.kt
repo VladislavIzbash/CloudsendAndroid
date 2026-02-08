@@ -1,5 +1,8 @@
 package ru.vizbash.cloudsend.ui.screen
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -38,7 +41,15 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val openDirectoryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocumentTree()
+        object : ActivityResultContracts.OpenDocumentTree() {
+            override fun createIntent(
+                context: Context,
+                input: Uri?
+            ): Intent {
+                return super.createIntent(context, input)
+                    .putExtra("android.content.extra.SHOW_ADVANCED", true)
+            }
+        }
     ) { uri ->
         if (uri != null) {
             takePersistablePermission(context, uri)

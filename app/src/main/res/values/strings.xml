@@ -18,7 +18,10 @@
     <string name="screen_device_list__device_online">Online</string>
     <string name="screen_device_list__device_offline">Offline</string>
     <string name="screen_device_list__loading_error">Error loading device list</string>
-    <string name="screen_device_list__no_devices">No other devices registered yet</string>
+    <string name="screen_device_list__loading">Loading device list</string>
+    <string name="screen_device_list__empty_title">No other devices registered yet</string>
+    <string name="screen_device_list__empty_text">When you login to server with other device, it will appear here</string>
+    <string name="screen_device_list__refresh_button">Refresh</string>
     <string name="screen_transfer__initializing_title">Sending request to %s</string>
     <string name="screen_transfer__error_title">Error sending %s to %s</string>
     <string name="screen_transfer__error_text">Error description</string>
