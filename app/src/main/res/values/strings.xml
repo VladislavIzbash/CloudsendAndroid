@@ -32,4 +32,8 @@
     <string name="screen_transfer__leave_dialog_text">Leaving this screen will cancel current file transfer</string>
     <string name="screen_transfer__leave_dialog_confirm">Confirm</string>
     <string name="screen_transfer__leave_dialog_cancel">Cancel</string>
+    <string name="screen_settings__receive__header">Receiving</string>
+    <string name="screen_settings__receive__download_dir">Choose download directory</string>
+    <string name="screen_settings__receive__download_dir_hint">By default Downloads directory is used</string>
+    <string name="screen_settings__receive__auto_accept">Auto accept incoming transfers</string>
 </resources>

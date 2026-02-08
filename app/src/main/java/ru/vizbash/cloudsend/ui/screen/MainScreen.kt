@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.serialization.Serializable
 import ru.vizbash.cloudsend.R
 import ru.vizbash.cloudsend.ui.screen.send.SendScreen
@@ -30,7 +31,7 @@ private sealed class Pages {
     data object History : Pages()
 }
 
-private enum class Page { Receive, Send, History }
+private enum class Page { Receive, Send, Settings }
 
 @Composable
 fun MainScreen(
@@ -61,12 +62,12 @@ fun MainScreen(
                     }
                 )
                 NavigationBarItem(
-                    selected = currentPage == Page.History,
+                    selected = currentPage == Page.Settings,
                     onClick = {
-                        currentPage = Page.History
+                        currentPage = Page.Settings
                     },
                     icon = {
-                        Icon(painterResource(R.drawable.ic_history), null)
+                        Icon(painterResource(R.drawable.ic_settings), null)
                     }
                 )
             }
@@ -83,8 +84,11 @@ fun MainScreen(
                 )
             }
 
-            Page.History -> {
-                Text("history")
+            Page.Settings -> {
+                SettingsScreen(
+                    modifier = Modifier.padding(contentPadding),
+                    viewModel = hiltViewModel(),
+                )
             }
         }
     }

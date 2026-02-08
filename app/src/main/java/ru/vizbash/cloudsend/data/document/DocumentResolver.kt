@@ -15,11 +15,7 @@ class DocumentResolver @Inject constructor(
     fun resolve(documentUri: String): DocumentInfo? {
         val document = DocumentFile.fromSingleUri(context, documentUri.toUri())!!
 
-        val name = document.name
-        if (name == null) {
-            Log.e(TAG, "Cannot read document name from $documentUri")
-            return null
-        }
+        val name = resolveName(documentUri) ?: return null
 
         val size = document.length()
         if (size == 0L) {
@@ -28,5 +24,15 @@ class DocumentResolver @Inject constructor(
         }
 
         return DocumentInfo(name, size)
+    }
+
+    fun resolveName(documentUri: String): String? {
+        val document = DocumentFile.fromSingleUri(context, documentUri.toUri())!!
+
+        val name = document.name
+        if (name == null) {
+            Log.e(TAG, "Cannot read document name from $documentUri")
+        }
+        return name
     }
 }

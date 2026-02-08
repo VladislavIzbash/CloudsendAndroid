@@ -1,0 +1,10 @@
+package ru.vizbash.cloudsend.ui.util
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+
+fun takePersistablePermission(context: Context, uri: Uri) {
+    val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    context.contentResolver.takePersistableUriPermission(uri, flags)
+}

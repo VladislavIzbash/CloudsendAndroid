@@ -12,8 +12,7 @@ private const val KEY_ACCESS_TOKEN = "access_token"
 private const val KEY_REFRESH_TOKEN = "refresh_token"
 
 class PreferencesStorage @Inject constructor(
-    @param:ApplicationContext
-    private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ConnectionParamsRepository, TokenRepository {
     private val sharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
