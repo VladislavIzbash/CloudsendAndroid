@@ -1,9 +1,14 @@
 package ru.vizbash.cloudsend.data.persistence.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity("device")
 data class DeviceEntity(
-    @PrimaryKey val uuid: String,
+    @PrimaryKey
+    @ColumnInfo("uuid")
+    val uuid: String,
+    @ColumnInfo("name")
+    val name: String,
 )

@@ -95,7 +95,7 @@ class TransferViewModel @AssistedInject constructor(
 
         val transferUuid = sendFileTransferRequestInteractor(
             fileUri = fileUri,
-            targetUuid = targetDevice.uuid,
+            targetDevice = targetDevice,
         ).getOrElse { e ->
             _state.update {
                 it.copy(transferState = TransferState.Error(e as AppError))
