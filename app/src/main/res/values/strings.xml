@@ -39,4 +39,9 @@
     <string name="screen_settings__receive__download_dir">Choose download directory</string>
     <string name="screen_settings__receive__download_dir_hint">By default Downloads directory is used</string>
     <string name="screen_settings__receive__auto_accept">Auto accept incoming transfers</string>
+    <string name="screen_receive__transfer_action_open">Open</string>
+    <string name="screen_receive__transfer_action_cancel">Cancel</string>
+    <string name="screen_receive__transfer_action_dismiss">Dismiss</string>
+    <string name="screen_receive__header_active_transfer">Active transfer</string>
+    <string name="screen_receive__header_completed_transfers">Completed transfers</string>
 </resources>

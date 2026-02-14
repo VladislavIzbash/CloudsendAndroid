@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "ru.vizbash.cloudsend"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -71,6 +69,7 @@ dependencies {
     implementation(libs.ktor.client.contentNegotiation)
     implementation(libs.ktor.client.encoding)
     implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.websockets)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.dagger.hilt)

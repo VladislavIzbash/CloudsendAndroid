@@ -9,26 +9,39 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.onDownload
 import io.ktor.client.plugins.onUpload
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.receiveDeserialized
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.core.Closeable
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
+import io.ktor.utils.io.jvm.javaio.toInputStream
+import io.ktor.websocket.close
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.serialization.json.Json
 import ru.vizbash.cloudsend.data.network.dto.AuthorizeRequest
 import ru.vizbash.cloudsend.data.network.dto.DeviceResponse
 import ru.vizbash.cloudsend.data.network.dto.RefreshRequest
 import ru.vizbash.cloudsend.data.network.dto.RegisterRequest
+import ru.vizbash.cloudsend.data.network.dto.SendMessage
 import ru.vizbash.cloudsend.data.network.dto.SendRequest
 import ru.vizbash.cloudsend.data.network.dto.SendResponse
 import ru.vizbash.cloudsend.data.network.dto.TokensResponse
 import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import java.io.InputStream
+import kotlin.coroutines.cancellation.CancellationException
 
 private val JSON = Json {
     ignoreUnknownKeys = true
@@ -44,7 +57,7 @@ private const val TAG = "CloudSendClient"
 
 class CloudsendClient(
     private val httpClient: HttpClient,
-) {
+) : Closeable by httpClient {
     suspend fun login(login: String, password: String): TokensResponse {
         return httpClient.post("auth/authorize") {
             setBody(AuthorizeRequest(login, password))
@@ -80,6 +93,23 @@ class CloudsendClient(
         }.body()
     }
 
+    suspend fun logout() {
+        httpClient.post("auth/logout")
+    }
+
+    suspend fun downloadFile(
+        transferUuid: String,
+        onDownloadProgress: (Long) -> Unit,
+    ): InputStream {
+        return httpClient.get("transfer/download") {
+            parameter("transfer_uuid", transferUuid)
+
+            onDownload { downloaded, _ ->
+                onDownloadProgress(downloaded)
+            }
+        }.bodyAsChannel().toInputStream()
+    }
+
     suspend fun uploadFile(
         transferUuid: String,
         inputStream: InputStream,
@@ -88,12 +118,35 @@ class CloudsendClient(
         httpClient.post("transfer/upload") {
             parameter("transfer_uuid", transferUuid)
 
-            inputStream.available()
             contentType(ContentType.Application.OctetStream)
             setBody(inputStream.toByteReadChannel())
 
             onUpload { uploaded, _ ->
                 onUploadProgress(uploaded)
+            }
+        }
+    }
+
+    suspend fun rejectTransfer(transferUuid: String) {
+        httpClient.post("transfer/reject") {
+            parameter("transfer_uuid", transferUuid)
+        }
+    }
+
+    suspend fun listenIncomingTransfers(deviceUuid: String): Flow<SendMessage> {
+        return channelFlow {
+            httpClient.webSocket(
+                urlString = "listen",
+                request = {
+                    parameter("device_uuid", deviceUuid)
+                }
+            ) {
+                try {
+                    val message = receiveDeserialized<SendMessage>()
+                    this@channelFlow.send(message)
+                } catch (e: CancellationException) {
+                    this.close()
+                }
             }
         }
     }
@@ -122,6 +175,10 @@ class CloudsendClient(
 
             install(ContentNegotiation) {
                 json(JSON)
+            }
+
+            install(WebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(Json)
             }
 
             install(Auth) {

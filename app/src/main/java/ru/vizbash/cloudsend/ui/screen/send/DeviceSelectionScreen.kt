@@ -238,7 +238,7 @@ private fun SendScreenLoadingPreview() {
 private fun SendScreenErrorPreview() {
     CloudSendTheme {
         DeviceSelectionScreen(
-            state = State.Error(AppError.General),
+            state = State.Error(AppError.General()),
             onDeviceClick = {},
             onRefreshClick = {},
         )

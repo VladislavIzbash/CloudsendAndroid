@@ -36,7 +36,7 @@ import ru.vizbash.cloudsend.presentation.TransferViewModel.TransferState
 import ru.vizbash.cloudsend.ui.component.CenteredColumnLayout
 import ru.vizbash.cloudsend.ui.component.CenteredColumnLayoutArt
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
-import ru.vizbash.cloudsend.util.ellipsize
+import ru.vizbash.cloudsend.ui.util.ellipsize
 
 private const val FilenameLimit = 20
 
@@ -329,7 +329,7 @@ private fun TransferScreenErrorPreview() {
             state = State(
                 filename = "fishki.png",
                 targetDevice = "Macbook Pro",
-                transferState = TransferState.Error(AppError.General),
+                transferState = TransferState.Error(AppError.General()),
             ),
             showCloseAsBack = false,
             onCancelClick = {},

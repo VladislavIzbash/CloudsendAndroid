@@ -23,7 +23,7 @@ class SendFileInteractor @Inject constructor(
     ): Result<Unit> {
         return handleCommonExceptions(TAG) {
             val fileSize = documentResolver.resolve(fileUri)?.size
-                ?: return@handleCommonExceptions Result.failure(AppError.DocumentRead)
+                ?: return@handleCommonExceptions Result.failure(AppError.DocumentRead())
 
             context.contentResolver.openInputStream(fileUri.toUri()).use { inputStream ->
                 cloudsendClient.uploadFile(

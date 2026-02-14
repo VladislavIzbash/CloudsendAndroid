@@ -27,7 +27,7 @@ class SendFileTransferRequestInteractor @Inject constructor(
     suspend operator fun invoke(fileUri: String, targetDevice: Device): Result<String> {
         return handleCommonExceptions(TAG) {
             val (name, size) = documentResolver.resolve(fileUri)
-                ?: return@handleCommonExceptions Result.failure(AppError.DocumentRead)
+                ?: return@handleCommonExceptions Result.failure(AppError.DocumentRead())
             try {
                 ShortcutManagerCompat.pushDynamicShortcut(
                     context,
@@ -48,8 +48,8 @@ class SendFileTransferRequestInteractor @Inject constructor(
                 Result.success(resp.transferUuid!!)
             } catch (e: ClientRequestException) {
                 when (e.response.status) {
-                    HttpStatusCode.Forbidden -> Result.failure(AppError.TransferRejected)
-                    HttpStatusCode.Gone -> Result.failure(AppError.TargetOffline)
+                    HttpStatusCode.Forbidden -> Result.failure(AppError.TransferRejected())
+                    HttpStatusCode.Gone -> Result.failure(AppError.TargetOffline())
                     else -> throw e
                 }
             }

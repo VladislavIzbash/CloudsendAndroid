@@ -23,9 +23,9 @@ class LoginInteractor @Inject constructor(
         password: String,
         deviceName: String,
     ): Boolean {
-        return try {
-            val client = cloudsendClientFactory.create(baseUrl)
+        val client = cloudsendClientFactory.create(baseUrl)
 
+        return try {
             val tokens = client.login(login, password)
             Log.i(TAG, "Authenticated to $baseUrl")
 
@@ -40,6 +40,8 @@ class LoginInteractor @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Failed to login to server: ${e.message}")
             false
+        } finally {
+            client.close()
         }
     }
 }

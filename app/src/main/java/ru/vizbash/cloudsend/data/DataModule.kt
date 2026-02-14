@@ -14,6 +14,7 @@ import ru.vizbash.cloudsend.data.persistence.ConnectionParamsRepository
 import ru.vizbash.cloudsend.data.persistence.PreferencesStorage
 import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import ru.vizbash.cloudsend.data.persistence.db.AppDatabase
+import ru.vizbash.cloudsend.data.persistence.db.CompletedTransferDao
 import ru.vizbash.cloudsend.data.persistence.db.DeviceDao
 
 @Module
@@ -45,5 +46,9 @@ abstract class DataModule {
 
         @Provides
         fun provideDeviceDao(database: AppDatabase): DeviceDao = database.deviceDao()
+
+        @Provides
+        fun provideCompletedTransferDao(database: AppDatabase): CompletedTransferDao =
+            database.completedTransferDao()
     }
 }

@@ -1,8 +1,5 @@
 package ru.vizbash.cloudsend.ui.screen
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -31,6 +28,7 @@ import ru.vizbash.cloudsend.data.persistence.settings.AppSettings
 import ru.vizbash.cloudsend.data.persistence.settings.Setting
 import ru.vizbash.cloudsend.presentation.SettingsViewModel
 import ru.vizbash.cloudsend.presentation.SettingsViewModel.State
+import ru.vizbash.cloudsend.ui.component.ListHeader
 import ru.vizbash.cloudsend.ui.theme.CloudSendTheme
 import ru.vizbash.cloudsend.util.takePersistablePermission
 
@@ -41,15 +39,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val openDirectoryLauncher = rememberLauncherForActivityResult(
-        object : ActivityResultContracts.OpenDocumentTree() {
-            override fun createIntent(
-                context: Context,
-                input: Uri?
-            ): Intent {
-                return super.createIntent(context, input)
-                    .putExtra("android.content.extra.SHOW_ADVANCED", true)
-            }
-        }
+        ActivityResultContracts.OpenDocumentTree()
     ) { uri ->
         if (uri != null) {
             takePersistablePermission(context, uri)
@@ -80,7 +70,7 @@ private fun SettingsScreen(
         modifier = modifier
             .padding(vertical = 16.dp)
     ) {
-        BlockHeader(stringResource(R.string.screen_settings__receive__header))
+        ListHeader(stringResource(R.string.screen_settings__receive__header))
         DirectorySetting(
             title = stringResource(R.string.screen_settings__receive__download_dir),
             supportingText = state.downloadDir
@@ -145,14 +135,7 @@ private fun DirectorySetting(
     )
 }
 
-@Composable
-private fun BlockHeader(text: String) {
-    Text(
-        modifier = Modifier.padding(start = 16.dp),
-        text = text,
-        style = MaterialTheme.typography.titleSmall,
-    )
-}
+
 
 @Preview
 @Composable
