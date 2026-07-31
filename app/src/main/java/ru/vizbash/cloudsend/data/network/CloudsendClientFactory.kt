@@ -21,10 +21,14 @@ class CloudsendClientFactory @Inject constructor(
                 gzip(0.9F)
             }
 
-            install(HttpTimeout)
+            install(HttpTimeout) {
+                connectTimeoutMillis = 10000
+                socketTimeoutMillis = 10000
+                requestTimeoutMillis = 10000
+            }
 
             install(Logging) {
-                level = LogLevel.ALL
+                level = LogLevel.HEADERS
                 logger = object : Logger {
                     override fun log(message: String) {
                         Log.d("HTTP", message)

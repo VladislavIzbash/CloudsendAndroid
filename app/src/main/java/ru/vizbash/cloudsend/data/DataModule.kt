@@ -16,6 +16,7 @@ import ru.vizbash.cloudsend.data.persistence.TokenRepository
 import ru.vizbash.cloudsend.data.persistence.db.AppDatabase
 import ru.vizbash.cloudsend.data.persistence.db.CompletedTransferDao
 import ru.vizbash.cloudsend.data.persistence.db.DeviceDao
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,6 +28,8 @@ abstract class DataModule {
     abstract fun bindTokenRepository(preferencesStorage: PreferencesStorage): TokenRepository
 
     companion object {
+
+        @Singleton
         @Provides
         fun provideCloudsendClient(
             cloudsendClientFactory: CloudsendClientFactory,
@@ -35,6 +38,7 @@ abstract class DataModule {
             return cloudsendClientFactory.create(connectionParamsRepository.get().baseUrl)
         }
 
+        @Singleton
         @Provides
         fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
             return Room.databaseBuilder(

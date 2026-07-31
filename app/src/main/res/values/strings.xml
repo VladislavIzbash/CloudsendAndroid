@@ -1,6 +1,7 @@
 <resources>
     <string name="error_general">General error</string>
-    <string name="error_document_read">Error reading file</string>
+    <string name="error_document_read">Error reading provided file</string>
+    <string name="error_document_write">Error writing output file</string>
     <string name="error_network">Network error</string>
     <string name="error_transfer_rejected">Device rejected transfer</string>
     <string name="error_target_offline">Target device is offline</string>
@@ -44,4 +45,6 @@
     <string name="screen_receive__transfer_action_dismiss">Dismiss</string>
     <string name="screen_receive__header_active_transfer">Active transfer</string>
     <string name="screen_receive__header_completed_transfers">Completed transfers</string>
+    <string name="screen_receive__empty_title">There is no transfers yet</string>
+    <string name="screen_receive__empty_text">When you send file to this device, request will appear here</string>
 </resources>

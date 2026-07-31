@@ -20,6 +20,11 @@ sealed class AppError : Throwable() {
             context.getString(R.string.error_document_read)
     }
 
+    class DocumentWrite : AppError() {
+        override fun message(context: Context) =
+            context.getString(R.string.error_document_write)
+    }
+
     class Network : AppError() {
         override fun message(context: Context) =
             context.getString(R.string.error_network)
@@ -46,7 +51,7 @@ inline fun <T> handleCommonExceptions(logTag: String? = null, block: () -> Resul
         e.printStackTrace()
         Result.failure(AppError.Network())
     } catch (e: Exception) {
-        Log.e(logTag, "Error: $e")
+        Log.e(logTag, "Error: ${e.message}")
         e.printStackTrace()
         Result.failure(AppError.General())
     }
