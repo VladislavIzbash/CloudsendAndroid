@@ -11,7 +11,7 @@ Android client for [Cloudsend](https://github.com/VladislavIzbash/cloudsend) ser
 ## Screencast
 
 ### Sharing file
-![](./screenshots/share.webm)
+![share.webm](https://github.com/user-attachments/assets/5c46fb71-578d-48c6-98ff-37c960097ce1)
 
 ## Implementation plan
 - [x] Initial setup
